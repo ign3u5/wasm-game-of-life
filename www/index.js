@@ -34,13 +34,34 @@ canvas.addEventListener("click", event => {
     drawCells();
 });
 
+const randomCanvasButton = document.getElementById("random-canvas");
+
+randomCanvasButton.textContent = "🤹‍♀️";
+
+randomCanvasButton.addEventListener("click", event => {
+    universe.initialise_rnd();
+
+    drawGrid();
+    drawCells();
+});
+
+const clearCanvasButton = document.getElementById("clear-canvas");
+
+clearCanvasButton.textContent = "❌";
+
+clearCanvasButton.addEventListener("click", event => {
+    universe.clear();
+    
+    drawGrid();
+    drawCells();
+});
+
+const playPauseButton = document.getElementById("play-pause");
 let animationId = null;
 
 const isPaused = () => {
     return animationId == null;
 };
-
-const playPauseButton = document.getElementById("play-pause");
 
 const play = () => {
     playPauseButton.textContent = "⏸";

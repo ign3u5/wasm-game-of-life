@@ -87,6 +87,22 @@ impl Universe {
         self.cells[idx].toggle();
     }
 
+    pub fn clear(&mut self) {
+        for cell in self.cells.iter_mut() {
+            *cell = Cell::Dead;
+        }
+    }
+
+    pub fn initialise_rnd(&mut self) {
+        for cell in self.cells.iter_mut() {
+            if js_sys::Math::random() < 0.5 {
+                *cell = Cell::Alive;
+            } else {
+                *cell = Cell::Dead;
+            }
+        }
+    }
+
     pub fn new() -> Universe {
         utils::set_panic_hook();
         let width = 64;
