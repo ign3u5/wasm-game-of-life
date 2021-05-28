@@ -11,11 +11,13 @@ use std::fmt;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-macro_rules! log {
-    ($( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    };
-}
+// Logging each iteration is very laggy
+
+// macro_rules! log {
+//     ($( $t:tt )* ) => {
+//         web_sys::console::log_1(&format!( $( $t )* ).into());
+//     };
+// }
 
 #[wasm_bindgen]
 #[repr(u8)]
@@ -23,6 +25,15 @@ macro_rules! log {
 pub enum Cell {
     Dead = 0,
     Alive = 1,
+}
+
+impl Cell {
+    fn toggle(&mut self) {
+        *self = match *self {
+            Cell::Dead => Cell::Alive,
+            Cell::Alive => Cell::Dead,
+        };
+    }
 }
 
 #[wasm_bindgen]
@@ -69,6 +80,11 @@ impl Universe {
 
     pub fn cells(&self) -> *const Cell {
         self.cells.as_ptr()
+    }
+
+    pub fn toggle_cell(&mut self, row: u32, column: u32) {
+        let idx = self.get_index(row, column);
+        self.cells[idx].toggle();
     }
 
     pub fn new() -> Universe {
@@ -119,7 +135,7 @@ impl Universe {
 
         let cells = 
             (0..width * height)
-            .map(|i| {
+            .map(|_i| {
                 if js_sys::Math::random() < 0.5 {
                     Cell::Alive
                 } else {
